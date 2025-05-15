@@ -26,22 +26,22 @@ jobs:
         run: |
           pip install pyyaml requests && pip install -r requirements.txt
 
-      # - name: Collect Subscribe
-      #   id: collect
-      #   run: python -u subscribe/collect.py
+      - name: Collect Subscribe
+        id: collect
+        run: python -u subscribe/collect.py
 
-      # - name: Validate generated files
-      #   working-directory: data
-      #   run: |
-      #     ls -l subscribes.txt
+      - name: Validate generated files
+        working-directory: data
+        run: |
+          ls -l subscribes.txt
 
-      # - name: Update Gist
-      #   working-directory: data
-      #   env:
-      #     GH_TOKEN: ${{ secrets.PAT }}
-      #   run: |
-      #     gh gist edit ${{ secrets.GIST_ID }} \
-      #       --add subscribes.txt
+      - name: Update Gist
+        working-directory: data
+        env:
+          GH_TOKEN: ${{ secrets.PAT }}
+        run: |
+          gh gist edit ${{ secrets.GIST_ID }} \
+            --add subscribes.txt
 
       - name: Load Gist
         working-directory: extra-sub

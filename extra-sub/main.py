@@ -85,6 +85,6 @@ def main():
     # 处理 Telegram 历史消息
     telegram_service.process_telegram_messages(gist_service)
 
-
+    process_subscriptions(gist_service)
 if __name__ == "__main__":
     main()

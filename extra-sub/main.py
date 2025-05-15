@@ -85,6 +85,10 @@ def main():
     # 处理 Telegram 历史消息
     telegram_service.process_telegram_messages(gist_service)
 
-    process_subscriptions(gist_service)
+    urls = process_subscriptions(gist_service)
+    if urls:
+        with open('subscribes-scan.txt', 'w', encoding='utf-8') as f:
+            f.write('\n'.join(urls))
+
 if __name__ == "__main__":
     main()

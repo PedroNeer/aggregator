@@ -59,7 +59,7 @@ jobs:
       - name: Validate updated file
         working-directory: extra-sub
         run: |
-          ls -l subscriptions.json          
+          ls -l subscriptions.json        
 
       - name: Upload Updated File
         working-directory: extra-sub
@@ -68,6 +68,19 @@ jobs:
         run: |
           gh gist edit ${{ secrets.GIST_ID }} \
             --add subscriptions.json
+
+      - name: Validate Scan file
+        working-directory: extra-sub
+        run: |
+          ls -l subscribes-scan.txt
+
+      - name: Upload Scan File
+        working-directory: extra-sub
+        env:
+          GH_TOKEN: ${{ secrets.PAT }}
+        run: |
+          gh gist edit ${{ secrets.GIST_ID }} \
+            --add subscribes-scan.txt
 
 
           

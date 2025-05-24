@@ -43,6 +43,17 @@ jobs:
           gh gist edit ${{ secrets.GIST_ID }} \
             --add subscribes.txt
 
+      - name: Merge and Convert Subscriptions
+        env:
+          GH_TOKEN: ${{ secrets.PAT }}
+        run: |
+          python -u subscribe/merge_and_convert.py \
+            --gist-id ${{ secrets.GIST_ID }} \
+            --token ${{ secrets.PAT }} \
+            --filename subscribes.txt \
+            --hours 6 \
+            --output merged_subscribes.txt
+
       - name: Load Gist
         working-directory: extra-sub
         env:

@@ -147,7 +147,7 @@ def main():
     # 上传到 gist
     logger.info("Uploading to gist...")
 
-    upload(args.token, args.gist_id, '\n'.join(links), args.filename)
+    upload(args.token, args.gist_id, '\n'.join(links), args.output)
 
     # push_tool = PushToGist(token=args.token)
     # if not push_tool.upload(filepath=args.output, gist_id=args.gist_id):

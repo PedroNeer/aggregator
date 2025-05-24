@@ -19,6 +19,9 @@ from utils import http_get
 from push import PushToGist
 from logger import logger
 
+from datetime import datetime, timedelta, timezone
+import requests
+
 def get_gist_history(gist_id: str, token: str, filename: str, hours: int = 6) -> List[str]:
     """获取 gist 历史文件内容"""
     headers = {
@@ -57,6 +60,31 @@ def get_gist_history(gist_id: str, token: str, filename: str, hours: int = 6) ->
                 contents.update(links)
     
     return list(contents)
+
+def upload(token, gist_id, content, filename):
+    headers = {
+        "Accept": "application/vnd.github.v3+json",
+        "User-Agent": "Python/3.x",
+        "Authorization": f"token {token}",
+    }
+
+    """上传文件到 Gist"""
+    
+    data = {
+        "files": {
+            filename: {
+                "content": content
+            }
+        }
+    }
+    
+    try:
+        response = requests.patch(f"https://api.github.com/gists/{gist_id}", headers=headers, json=data)
+        response.raise_for_status()
+        return True
+    except requests.exceptions.RequestException as e:
+        return False
+        
 
 def convert_subscription(links: List[str], output_file: str) -> bool:
     """使用 subconverter 转换订阅"""
@@ -107,10 +135,10 @@ def main():
     if not links:
         logger.error("No subscription links found")
         return
-    with open(args.output, 'w', encoding='utf-8') as f:
-        f.write('\n'.join(links))
+    # with open(args.output, 'w', encoding='utf-8') as f:
+    #     f.write()
     # 转换订阅
-    output_file = os.path.join(PATH, "data", args.output)
+    # output_file = os.path.join(PATH, "data", args.output)
     # logger.info("Converting subscriptions...")
     # if not convert_subscription(links, output_file):
     #     logger.error("Failed to convert subscriptions")
@@ -118,10 +146,13 @@ def main():
     
     # 上传到 gist
     logger.info("Uploading to gist...")
-    push_tool = PushToGist(token=args.token)
-    if not push_tool.upload(filepath=args.output, gist_id=args.gist_id):
-        logger.error("Failed to upload to gist")
-        return
+
+    upload(args.token, args.gist_id, '\n'.join(links), args.filename)
+
+    # push_tool = PushToGist(token=args.token)
+    # if not push_tool.upload(filepath=args.output, gist_id=args.gist_id):
+    #     logger.error("Failed to upload to gist")
+    #     return
     
     logger.info("Done!")
 

@@ -26,22 +26,22 @@ jobs:
         run: |
           pip install pyyaml requests && pip install -r requirements.txt
 
-      - name: Collect Subscribe
-        id: collect
-        run: python -u subscribe/collect.py
+      # - name: Collect Subscribe
+      #   id: collect
+      #   run: python -u subscribe/collect.py
 
-      - name: Validate generated files
-        working-directory: data
-        run: |
-          ls -l subscribes.txt
+      # - name: Validate generated files
+      #   working-directory: data
+      #   run: |
+      #     ls -l subscribes.txt
 
-      - name: Update Gist
-        working-directory: data
-        env:
-          GH_TOKEN: ${{ secrets.PAT }}
-        run: |
-          gh gist edit ${{ secrets.GIST_ID }} \
-            --add subscribes.txt
+      # - name: Update Gist
+      #   working-directory: data
+      #   env:
+      #     GH_TOKEN: ${{ secrets.PAT }}
+      #   run: |
+      #     gh gist edit ${{ secrets.GIST_ID }} \
+      #       --add subscribes.txt
 
       - name: Merge and Convert Subscriptions
         env:
@@ -54,44 +54,44 @@ jobs:
             --hours 6 \
             --output merged_subscribes.txt
 
-      - name: Load Gist
-        working-directory: extra-sub
-        env:
-          GH_TOKEN: ${{ secrets.PAT }}
-        run: |
-          gh gist clone ${{ secrets.GIST_ID }}
-          cp ${{ secrets.GIST_ID }}/subscriptions.json .
+      # - name: Load Gist
+      #   working-directory: extra-sub
+      #   env:
+      #     GH_TOKEN: ${{ secrets.PAT }}
+      #   run: |
+      #     gh gist clone ${{ secrets.GIST_ID }}
+      #     cp ${{ secrets.GIST_ID }}/subscriptions.json .
 
-      - name: Execute Python Script
-        working-directory: extra-sub
-        run: |
-          python -u main.py
+      # - name: Execute Python Script
+      #   working-directory: extra-sub
+      #   run: |
+      #     python -u main.py
 
-      - name: Validate updated file
-        working-directory: extra-sub
-        run: |
-          ls -l subscriptions.json        
+      # - name: Validate updated file
+      #   working-directory: extra-sub
+      #   run: |
+      #     ls -l subscriptions.json        
 
-      - name: Upload Updated File
-        working-directory: extra-sub
-        env:
-          GH_TOKEN: ${{ secrets.PAT }}
-        run: |
-          gh gist edit ${{ secrets.GIST_ID }} \
-            --add subscriptions.json
+      # - name: Upload Updated File
+      #   working-directory: extra-sub
+      #   env:
+      #     GH_TOKEN: ${{ secrets.PAT }}
+      #   run: |
+      #     gh gist edit ${{ secrets.GIST_ID }} \
+      #       --add subscriptions.json
 
-      - name: Validate Scan file
-        working-directory: extra-sub
-        run: |
-          ls -l subscribes-scan.txt
+      # - name: Validate Scan file
+      #   working-directory: extra-sub
+      #   run: |
+      #     ls -l subscribes-scan.txt
 
-      - name: Upload Scan File
-        working-directory: extra-sub
-        env:
-          GH_TOKEN: ${{ secrets.PAT }}
-        run: |
-          gh gist edit ${{ secrets.GIST_ID }} \
-            --add subscribes-scan.txt
+      # - name: Upload Scan File
+      #   working-directory: extra-sub
+      #   env:
+      #     GH_TOKEN: ${{ secrets.PAT }}
+      #   run: |
+      #     gh gist edit ${{ secrets.GIST_ID }} \
+      #       --add subscribes-scan.txt
 
 
           

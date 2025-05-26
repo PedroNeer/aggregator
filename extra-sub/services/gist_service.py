@@ -3,18 +3,41 @@
 
 import json
 from datetime import datetime
+
+import requests
 from utils.logger import logger
 import os
 
 class GistService:
-    def __init__(self):
+    def __init__(self, token):
         self.subscriptions_file = "subscriptions.json"
+        self.token = token
+        self.headers = {
+            "Accept": "application/vnd.github.v3+json",
+            "User-Agent": "Python/3.x",
+            "Authorization": f"token {self.token}",
+        }
+
+    def downloadGistFile(self, gist_id, filename):
+        """下载文件到本地"""
+        url = f"https://api.github.com/gists/{gist_id}"
+        try:
+            response = requests.get(url, headers=self.headers)
+            if response.status_code == 200:
+                data = response.json()['files'][filename]['content']
+                with open(filename, 'w', encoding='utf-8') as f:
+                    f.write(data)
+            else:
+                logger.error(f"下载文件 {filename} 失败: {response.status_code}")
+                return None
+        except Exception as e:
+            logger.error(f"下载文件 {filename} 失败: {e}")
+            return None
 
     def load_subscriptions(self):
         """从本地文件加载订阅信息"""
         try:
             logger.info(f"开始从本地文件加载订阅信息: {self.subscriptions_file}")
-            
             # 检查文件是否存在
             if not os.path.exists(self.subscriptions_file):
                 logger.info("首次运行，创建新的订阅文件")
@@ -48,6 +71,27 @@ class GistService:
             logger.info("订阅信息保存成功")
         except Exception as e:
             logger.error(f"保存订阅信息失败: {e}")
+
+    def uploadGistFile(self, gist_id, filename, content):
+        """上传文件到 Gist"""
+        url = f"https://api.github.com/gists/{gist_id}"
+        try:
+            response = requests.post(url, headers=self.headers, json={
+                "files": {
+                    filename: {
+                        "content": content
+                    }
+                }
+            })
+            if response.status_code == 200:
+                logger.info(f"文件 {filename} 上传成功")
+                return response.json()
+            else:
+                logger.error(f"文件 {filename} 上传失败: {response.status_code}")
+                return None
+        except Exception as e:
+            logger.error(f"上传文件 {filename} 失败: {e}")
+            return None
 
     def update_subscription_status(self, subscription, fetch_nodes_func):
         """更新订阅状态"""

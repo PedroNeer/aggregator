@@ -128,9 +128,9 @@ def main():
     args = parser.parse_args()
     scan = []
     with open(os.path.join("data", args.filename), "r", encoding="utf-8") as f:
-        scan = f.readlines()
+        scan = f.read()
     if scan and len(scan) > 0:
-        upload(args.token, args.gist_id, '\n'.join(scan), args.filename)
+        upload(args.token, args.gist_id, scan, args.filename)
 
     # 获取历史订阅
     logger.info("Fetching gist history...")

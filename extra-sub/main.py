@@ -84,10 +84,10 @@ def main():
 
     logger.info("启动订阅收集和更新程序")
 
-    gist_service.downloadGistFile(args.gist_id, "subscriptions.json")
-
     # 初始化服务
     gist_service = GistService(args.token)
+
+    gist_service.downloadGistFile(args.gist_id, "subscriptions.json")
 
     telegram_service = TelegramService(CONFIG["telegram"]["channels"])
     # 处理 Telegram 历史消息

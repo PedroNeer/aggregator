@@ -126,7 +126,12 @@ def main():
     parser.add_argument("--output", default="merged_subscribes.txt", help="Output filename")
     
     args = parser.parse_args()
-    
+    scan = []
+    with open(os.path.join("data", args.filename), "r", encoding="utf-8") as f:
+        scan = f.readlines()
+    if scan and len(scan) > 0:
+        upload(args.token, args.gist_id, '\n'.join(scan), args.filename)
+
     # 获取历史订阅
     logger.info("Fetching gist history...")
     links = get_gist_history(args.gist_id, args.token, args.filename, args.hours)

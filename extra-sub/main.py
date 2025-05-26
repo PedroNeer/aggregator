@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import argparse
 import requests
 from datetime import datetime, time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -76,19 +77,29 @@ def process_subscriptions(gist_service):
     return valid_urls
 
 def main():
+    parser = argparse.ArgumentParser(description="Merge and convert subscriptions")
+    parser.add_argument("--gist-id", required=True, help="Gist ID")
+    parser.add_argument("--token", required=True, help="GitHub token")
+    args = parser.parse_args()
+
     logger.info("启动订阅收集和更新程序")
 
+    gist_service.downloadGistFile(args.gist_id, "subscriptions.json")
+
     # 初始化服务
-    gist_service = GistService()
+    gist_service = GistService(args.token)
 
     telegram_service = TelegramService(CONFIG["telegram"]["channels"])
     # 处理 Telegram 历史消息
     telegram_service.process_telegram_messages(gist_service)
 
     urls = process_subscriptions(gist_service)
+
     if urls:
-        with open('subscribes-scan.txt', 'w', encoding='utf-8') as f:
-            f.write('\n'.join(urls))
+        gist_service.uploadGistFile(args.gist_id, "subscribes-scan.txt", '\n'.join(urls))
+
+    with open("subscriptions.json", "w", encoding="utf-8") as f:
+        gist_service.uploadGistFile(args.gist_id, "subscriptions.json", f.read())        
 
 if __name__ == "__main__":
     main()

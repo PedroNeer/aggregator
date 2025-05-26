@@ -128,7 +128,7 @@ def main():
     args = parser.parse_args()
     scan = []
     with open(os.path.join("data", args.filename), "r", encoding="utf-8") as f:
-        scan = f.read()
+        scan = f.read().strip()
     if scan and len(scan) > 0:
         upload(args.token, args.gist_id, scan, args.filename)
 

@@ -98,8 +98,8 @@ def main():
     if urls:
         gist_service.uploadGistFile(args.gist_id, "subscribes-scan.txt", '\n'.join(urls))
 
-    with open("subscriptions.json", "w", encoding="utf-8") as f:
-        gist_service.uploadGistFile(args.gist_id, "subscriptions.json", f.read())        
+    with open("subscriptions.json", "r", encoding="utf-8") as f:
+        gist_service.uploadGistFile(args.gist_id, "subscriptions.json", f.read().strip())        
 
 if __name__ == "__main__":
     main()
